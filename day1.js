@@ -14,33 +14,33 @@ const spelledNumbersToDigits = {
     "nine": 9
 };
 
-export function firstFromAnywhereNumber(sentence)
-{
-    let smallestIndex = 99999;
-    let smallestNumber = NaN;
+// export function firstFromAnywhereNumber(sentence)
+// {
+//     let smallestIndex = 99999;
+//     let smallestNumber = NaN;
+//
+//     for (const [key, value] of Object.entries(spelledNumbersToDigits))
+//     {
+//         // console.log(`key: ${key}, value: ${value}`);
+//         let currentIndex = sentence.indexOf(key);
+//         if (currentIndex === -1)
+//             continue;
+//         if (currentIndex < smallestIndex)
+//         {
+//             smallestIndex = currentIndex;
+//             smallestNumber = value;
+//         }
+//     }
+//
+//     return {index: smallestIndex, number: smallestNumber};
+// }
 
-    for (const [key, value] of Object.entries(spelledNumbersToDigits))
-    {
-        // console.log(`key: ${key}, value: ${value}`);
-        let currentIndex = sentence.indexOf(key);
-        if (currentIndex === -1)
-            continue;
-        if (currentIndex < smallestIndex)
-        {
-            smallestIndex = currentIndex;
-            smallestNumber = value;
-        }
-    }
+// export function firstSpelledNumber(sentence)
+// {
+//     return getFirstNumber(sentence);
+// }
 
-    return {index: smallestIndex, number: smallestNumber};
-}
-
-export function firstSpelledNumber(sentence)
-{
-    return getFirstNumber(convertToDigits(sentence));
-}
-
-function SpelledDigits(sentence)
+function FindDigits(sentence)
 {
     let found = [];
     for (const [key, value] of Object.entries(spelledNumbersToDigits))
@@ -49,32 +49,32 @@ function SpelledDigits(sentence)
         if (currentIndex === -1)
             continue;
 
-        found.push({index: currentIndex, original: key, value: value});
+        found.push({index: currentIndex, value: value});
     }
     return found;
 }
 
-export function convertToDigits(sentence)
-{
-    let found = SpelledDigits(sentence);
-
-    if (found.length === 0)
-        return sentence;
-
-    found.sort((a, b) => a.index - b.index);
-    let shift = 0;
-    for (let i = 0; i < found.length; i++)
-    {
-        let pack = found[i];
-        // if (sentence.includes(pack.original))
-        //     sentence = sentence.replace(pack.original, pack.value.toString());
-        let actualIndex = shift + pack.index;
-        sentence = sentence.slice(0, actualIndex) + pack.value + sentence.slice(actualIndex);
-        shift += 1;
-    }
-
-    return sentence;
-}
+// export function convertToDigits(sentence)
+// {
+//     let found = SpelledDigits(sentence);
+//
+//     if (found.length === 0)
+//         return sentence;
+//
+//     found.sort((a, b) => a.index - b.index);
+//     let shift = 0;
+//     for (let i = 0; i < found.length; i++)
+//     {
+//         let pack = found[i];
+//         // if (sentence.includes(pack.original))
+//         //     sentence = sentence.replace(pack.original, pack.value.toString());
+//         let actualIndex = shift + pack.index;
+//         sentence = sentence.slice(0, actualIndex) + pack.value + sentence.slice(actualIndex);
+//         shift += 1;
+//     }
+//
+//     return sentence;
+// }
 
 function indexOfPackage(sentence, substring, value)
 {
@@ -84,15 +84,15 @@ function indexOfPackage(sentence, substring, value)
     return {index: currentIndex, number: substring};
 }
 
-export function FirstSpelledOrNumber(value)
-{
-    let firstSpelled = firstSpelledNumber(value);
-    let number = getFirstNumber(value);
-    let firstNumber = indexOfPackage(value, number.toString());
-    if (firstSpelled.index < firstNumber.index)
-        return firstSpelled.number;
-    return firstNumber.number;
-}
+// export function FirstSpelledOrNumber(value)
+// {
+//     let firstSpelled = firstSpelledNumber(value);
+//     let number = getFirstNumber(value);
+//     let firstNumber = indexOfPackage(value, number.toString());
+//     if (firstSpelled.index < firstNumber.index)
+//         return firstSpelled.number;
+//     return firstNumber.number;
+// }
 
 export function getFirstNumber(value)
 {
@@ -111,17 +111,11 @@ export function getFirstNumber(value)
 export function getLastNumber(value)
 {
     let reversedValue = value.split('').reverse();
-    return getFirstNumber(reversedValue);
-}
 
-function scanLine(value)
-{
-    let i = 0;
-    for (const character of value)
-    {
-
-        i++;
-    }
+    let lastNumber = getFirstNumber(reversedValue);
+    if (lastNumber.index !== -1)
+        lastNumber.index = value.length - 1 - lastNumber.index;
+    return lastNumber;
 }
 
 export function firstLastNumber(value)
@@ -130,6 +124,26 @@ export function firstLastNumber(value)
     let first = getFirstNumber(value);
     let last = getLastNumber(value);
     combination = first.value + "" + last.value;
+    return parseInt(combination);
+}
+
+export function firstLastNumberWithSpelled(value)
+{
+    let spelled = FindDigits(value);
+    let combination = "";
+    let first = getFirstNumber(value);
+    if (first.index !== -1)
+        spelled.push(first);
+    let last = getLastNumber(value);
+    if (last.index !== -1)
+        spelled.push(last);
+
+    // console.log(spelled);
+    let smallest = spelled.sort((a, b) => a.index - b.index)[0];
+    let largest = spelled.sort((a, b) => b.index - a.index)[0];
+
+    combination = smallest.value + "" + largest.value;
+    // console.log(`smallest ${smallest.value}, largest ${largest.value}`);
     return parseInt(combination);
 }
 
@@ -146,6 +160,17 @@ console.log("Solution for Day 1, step 2")
 sum = 0;
 for await (const line of readIterator(path1))
 {
-    sum += firstLastNumber(convertToDigits(line));
+    sum += firstLastNumberWithSpelled(line);
 }
 console.log(`Result ${sum}`);
+
+
+export function compute_array(data)
+{
+    let sum = 0;
+    for (const d of data)
+    {
+        sum += firstLastNumberWithSpelled(d);
+    }
+    return sum;
+}

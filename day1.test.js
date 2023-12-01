@@ -1,12 +1,6 @@
 ﻿import assert from 'node:assert';
 import {
-    getFirstNumber,
-    getLastNumber,
-    firstLastNumber,
-    firstSpelledNumber,
-    firstFromAnywhereNumber,
-    FirstSpelledOrNumber,
-    convertToDigits
+    getFirstNumber, getLastNumber, firstLastNumber, firstLastNumberWithSpelled, compute_array
 } from './day1.js';
 import {test} from 'node:test';
 
@@ -35,12 +29,18 @@ test('get the whole number', (t) =>
     assert.strictEqual(num, 15);
 });
 
-test('when only one number', (t) =>
+test('when only one number last', (t) =>
 {
-    let num1 = getLastNumber('treb7uchet');
-    assert.strictEqual(num1.value, 7);
-    let num2 = getFirstNumber('treb7uchet');
-    assert.strictEqual(num2.value, 7);
+    let num = getLastNumber('treb7uchet');
+    assert.strictEqual(num.value, 7);
+    assert.strictEqual(num.index, 4);
+});
+
+test('when only one number first', (t) =>
+{
+    let num = getFirstNumber('treb7uchet');
+    assert.strictEqual(num.value, 7);
+    assert.strictEqual(num.index, 4);
 });
 
 test('whole number when only one found!', (t) =>
@@ -51,24 +51,19 @@ test('whole number when only one found!', (t) =>
 
 test('Should detect the first digit with letters', (t) =>
 {
-    let num = firstSpelledNumber('two1nine');
-    assert.strictEqual(num.value, 2);
+    let num = firstLastNumberWithSpelled('two1nine');
+    assert.strictEqual(num, 29);
 })
 
 test('should include overlaps as separate numbers', (t) =>
 {
-    let num = firstLastNumber('oneight');
+    let num = firstLastNumberWithSpelled('oneight');
     assert.strictEqual(num, 18);
 })
 
-// test('convert to digits', (t) =>
-// {
-//     let num = convertToDigits('two1nine');
-//     assert.strictEqual(num, "2two19nine");
-// })
-//
-// test('convert to digits with overlaps', (t) =>
-// {
-//     let num = convertToDigits('xtwone3');
-//     assert.strictEqual(num, "x2tw1one3");
-// })
+await test('should pass test cases', async (t) =>
+{
+    let all = ["two1nine", "eightwothree", "abcone2threexyz", "xtwone3four", "4nineeightseven2", "zoneight234", "7pqrstsixteen"]
+    let num = compute_array(all);
+    assert.strictEqual(num, 281);
+});
