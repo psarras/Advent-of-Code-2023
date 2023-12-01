@@ -13,7 +13,7 @@ function readAll(path)
     console.log(data.toString());
 }
 
-readAll(path);
+// readAll(path);
 
 import {open} from 'node:fs/promises';
 
@@ -46,10 +46,8 @@ export async function* readIterator(path)
     let i = 0;
     for await (const line of file.readLines())
     {
-        // console.log(`${i++}: ${line}`);
         yield line;
     }
-
 }
 
 
