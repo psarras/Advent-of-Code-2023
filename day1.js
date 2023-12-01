@@ -14,67 +14,29 @@ const spelledNumbersToDigits = {
     "nine": 9
 };
 
-// export function firstFromAnywhereNumber(sentence)
-// {
-//     let smallestIndex = 99999;
-//     let smallestNumber = NaN;
-//
-//     for (const [key, value] of Object.entries(spelledNumbersToDigits))
-//     {
-//         // console.log(`key: ${key}, value: ${value}`);
-//         let currentIndex = sentence.indexOf(key);
-//         if (currentIndex === -1)
-//             continue;
-//         if (currentIndex < smallestIndex)
-//         {
-//             smallestIndex = currentIndex;
-//             smallestNumber = value;
-//         }
-//     }
-//
-//     return {index: smallestIndex, number: smallestNumber};
-// }
-
-// export function firstSpelledNumber(sentence)
-// {
-//     return getFirstNumber(sentence);
-// }
-
 function FindDigits(sentence)
 {
     let found = [];
     for (const [key, value] of Object.entries(spelledNumbersToDigits))
     {
-        let currentIndex = sentence.indexOf(key);
-        if (currentIndex === -1)
-            continue;
+        let clone = sentence;
+        let count = 0;
+        while (clone.indexOf(key) !== -1)
+        {
+            // console.log(clone);
+            let currentIndex = clone.indexOf(key) + count;
+            count += key.length;
+            clone = clone.replace(key, "");
+            if (currentIndex === -1)
+                continue;
 
-        found.push({index: currentIndex, value: value});
+            found.push({index: currentIndex, value: value});
+        }
     }
+    // console.log(found);
     return found;
 }
 
-// export function convertToDigits(sentence)
-// {
-//     let found = SpelledDigits(sentence);
-//
-//     if (found.length === 0)
-//         return sentence;
-//
-//     found.sort((a, b) => a.index - b.index);
-//     let shift = 0;
-//     for (let i = 0; i < found.length; i++)
-//     {
-//         let pack = found[i];
-//         // if (sentence.includes(pack.original))
-//         //     sentence = sentence.replace(pack.original, pack.value.toString());
-//         let actualIndex = shift + pack.index;
-//         sentence = sentence.slice(0, actualIndex) + pack.value + sentence.slice(actualIndex);
-//         shift += 1;
-//     }
-//
-//     return sentence;
-// }
 
 function indexOfPackage(sentence, substring, value)
 {
@@ -83,16 +45,6 @@ function indexOfPackage(sentence, substring, value)
         return {index: 99999, number: substring};
     return {index: currentIndex, number: substring};
 }
-
-// export function FirstSpelledOrNumber(value)
-// {
-//     let firstSpelled = firstSpelledNumber(value);
-//     let number = getFirstNumber(value);
-//     let firstNumber = indexOfPackage(value, number.toString());
-//     if (firstSpelled.index < firstNumber.index)
-//         return firstSpelled.number;
-//     return firstNumber.number;
-// }
 
 export function getFirstNumber(value)
 {
@@ -143,27 +95,49 @@ export function firstLastNumberWithSpelled(value)
     let largest = spelled.sort((a, b) => b.index - a.index)[0];
 
     combination = smallest.value + "" + largest.value;
+
+    let indexes = spelled.map(x => x.index);
+    let filter = indexes.filter(x => x >= value.length || x < 0);
+    if (filter.length > 0)
+    {
+        console.log(`${JSON.stringify(spelled)} + ${value} - result: ${combination} - ${filter}`);
+    }
+
     // console.log(`smallest ${smallest.value}, largest ${largest.value}`);
     return parseInt(combination);
 }
 
 console.log("Solution for Day 1, step 1")
 let path1 = "day1.input.txt";
-let sum = 0;
-for await (const line of readIterator(path1))
+
+async function day1_part1()
 {
-    sum += firstLastNumber(line);
+    let sum = 0;
+    for await (const line of readIterator(path1))
+    {
+        sum += firstLastNumber(line);
+    }
+    return sum;
 }
-console.log(`Result ${sum}`); // correct: 54239
+
+console.log(`Result ${await day1_part1()}`); // correct: 54239
+
+async function day1_part2(path)
+{
+    let sum = 0;
+    for await (const line of readIterator(path))
+    {
+        let firstLast = firstLastNumberWithSpelled(line);
+        // console.log(`from ${line} - ${firstLast}`);
+        sum += firstLast;
+    }
+    return sum;
+}
 
 console.log("Solution for Day 1, step 2")
-sum = 0;
-for await (const line of readIterator(path1))
-{
-    sum += firstLastNumberWithSpelled(line);
-}
-console.log(`Result ${sum}`);
+console.log(`Result ${await day1_part2(path1)}`); // 55343?
 
+console.log(`Result ${await day1_part2("day1.mitch.input.txt")}`);
 
 export function compute_array(data)
 {

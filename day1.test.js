@@ -51,6 +51,12 @@ test('whole number when only one found!', (t) =>
 
 test('Should detect the first digit with letters', (t) =>
 {
+    let num = firstLastNumberWithSpelled('seven');
+    assert.strictEqual(num, 77);
+})
+
+test('Should detect the first digit with letters', (t) =>
+{
     let num = firstLastNumberWithSpelled('two1nine');
     assert.strictEqual(num, 29);
 })
@@ -59,6 +65,18 @@ test('should include overlaps as separate numbers', (t) =>
 {
     let num = firstLastNumberWithSpelled('oneight');
     assert.strictEqual(num, 18);
+})
+
+test('should include overlaps as separate numbers', (t) =>
+{
+    let num = firstLastNumberWithSpelled('3two45two');
+    assert.strictEqual(num, 32);
+})
+
+test('includes 2 twice?', (t) =>
+{
+    let num = firstLastNumberWithSpelled('cdczlxgxpdqvkcqbfivet3');
+    assert.strictEqual(num, 53);
 })
 
 await test('should pass test cases', async (t) =>
