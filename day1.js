@@ -113,6 +113,7 @@ let path1 = "day1.input.txt";
 async function day1_part1()
 {
     let sum = 0;
+    
     for await (const line of readIterator(path1))
     {
         sum += firstLastNumber(line);
