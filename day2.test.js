@@ -1,6 +1,6 @@
 ﻿import assert from 'node:assert';
 import {test} from 'node:test';
-import {isValidGame, sumOfNonValidGames} from "./day2.js";
+import {isValidGame, sumOfNonValidGames, powerOfGame} from "./day2.js";
 
 
 test('is a valid game', (t) =>
@@ -36,6 +36,12 @@ test('total sum of games', (t) =>
 });
 
 
+test('Get the power of a game', (t) =>
+{
+    let gameResult = powerOfGame(
+        'Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green');
+    assert.strictEqual(gameResult.power, 48);
+});
 
 
 
