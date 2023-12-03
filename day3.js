@@ -79,6 +79,7 @@ let path = "day3.input.txt";
 let numbers = await readIteratorAsArray(path);
 console.log(numbers);
 let answer1 = engineNumbersSum(numbers);
-console.log(`Answer to Day3 ${answer1}`); // wrong 454952
+console.log(`Answer to Day3 ${answer1}`); // wrong 454952, 456840
+//for some reason it doesn't get zeros? 24 should have been 240 tw
 
 
