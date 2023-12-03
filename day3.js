@@ -40,6 +40,22 @@ export function engineNumbers(lines) {
     return numbers;
 }
 
+export function engineRatios(lines) {
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        let numberBuilder = "";
+        let isAdjacentToSymbol = false;
+        for (let j = 0; j < line.length; j++) {
+            let character = line[j];
+            if (character === "*") {
+                
+            }
+          
+        }
+    }
+    return 10;
+}
+
 export function isSymbolAround(lines, i, j) {
     // console.log(`check around: ${lines[j][i]} ${i} - ${j}`)
     for (let k = -1; k <= 1; k++) {
@@ -85,6 +101,6 @@ let path = "day3.input.txt";
 let numbers = await readIteratorAsArray(path);
 // console.log(numbers);
 let answer1 = engineNumbersSum(numbers);
-console.log(`Answer to Day3 ${answer1}`); // wrong 454952, 456840, 550853
+console.log(`Answer to Day3 ${answer1}`); // wrong 454952, 456840, 550853, 553079
 
 
