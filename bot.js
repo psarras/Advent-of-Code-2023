@@ -50,4 +50,13 @@ export async function* readIterator(path)
     }
 }
 
-
+export async function readIteratorAsArray(path)
+{
+    let lines = [];
+    const file = await open(path);
+    for await (const line of file.readLines())
+    {
+        lines.push(line.trim())
+    }
+    return lines;
+}
