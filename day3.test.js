@@ -92,13 +92,3 @@ test('engine ratio for example', (t) => {
     // assert.strictEqual(ratios.length, 2);
     assert.strictEqual(ratios, 467835);
 })
-
-// let test = [
-//     {"number": 467, 
-//         "symbols": [
-//             {"symbol": "*", "x": 3, "y": 1}
-//         ]}, 
-//     {"number": 35,
-//     "symbols": [
-//         {"symbol": "*", "x": 3, "y": 1}
-//     ];

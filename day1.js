@@ -1,5 +1,5 @@
 import {readIterator} from "./bot.js";
-
+import {fileURLToPath} from "url";
 
 const spelledNumbersToDigits = {
     // "zero": 0,
@@ -14,15 +14,12 @@ const spelledNumbersToDigits = {
     "nine": 9
 };
 
-function FindDigits(sentence)
-{
+function FindDigits(sentence) {
     let found = [];
-    for (const [key, value] of Object.entries(spelledNumbersToDigits))
-    {
+    for (const [key, value] of Object.entries(spelledNumbersToDigits)) {
         let clone = sentence;
         let count = 0;
-        while (clone.indexOf(key) !== -1)
-        {
+        while (clone.indexOf(key) !== -1) {
             // console.log(clone);
             let currentIndex = clone.indexOf(key) + count;
             count += key.length;
@@ -38,20 +35,17 @@ function FindDigits(sentence)
 }
 
 
-function indexOfPackage(sentence, substring, value)
-{
+function indexOfPackage(sentence, substring, value) {
     let currentIndex = sentence.indexOf(substring);
     if (currentIndex === -1)
         return {index: 99999, number: substring};
     return {index: currentIndex, number: substring};
 }
 
-export function getFirstNumber(value)
-{
+export function getFirstNumber(value) {
     let parsed;
     let i = 0;
-    for (const char of value)
-    {
+    for (const char of value) {
         parsed = parseInt(char);
         if (!isNaN(parsed))
             return {index: i, value: parsed};
@@ -60,8 +54,7 @@ export function getFirstNumber(value)
     return {index: -1, value: NaN};
 }
 
-export function getLastNumber(value)
-{
+export function getLastNumber(value) {
     let reversedValue = value.split('').reverse();
 
     let lastNumber = getFirstNumber(reversedValue);
@@ -70,8 +63,7 @@ export function getLastNumber(value)
     return lastNumber;
 }
 
-export function firstLastNumber(value)
-{
+export function firstLastNumber(value) {
     let combination = "";
     let first = getFirstNumber(value);
     let last = getLastNumber(value);
@@ -79,8 +71,7 @@ export function firstLastNumber(value)
     return parseInt(combination);
 }
 
-export function firstLastNumberWithSpelled(value)
-{
+export function firstLastNumberWithSpelled(value) {
     let spelled = FindDigits(value);
     let combination = "";
     let first = getFirstNumber(value);
@@ -98,8 +89,7 @@ export function firstLastNumberWithSpelled(value)
 
     let indexes = spelled.map(x => x.index);
     let filter = indexes.filter(x => x >= value.length || x < 0);
-    if (filter.length > 0)
-    {
+    if (filter.length > 0) {
         console.log(`${JSON.stringify(spelled)} + ${value} - result: ${combination} - ${filter}`);
     }
 
@@ -107,27 +97,20 @@ export function firstLastNumberWithSpelled(value)
     return parseInt(combination);
 }
 
-console.log("Solution for Day 1, step 1")
-let path1 = "day1.input.txt";
 
-async function day1_part1()
-{
+async function day1_part1(path) {
     let sum = 0;
-    
-    for await (const line of readIterator(path1))
-    {
+
+    for await (const line of readIterator(path)) {
         sum += firstLastNumber(line);
     }
     return sum;
 }
 
-console.log(`Result ${await day1_part1()}`); // correct: 54239
 
-async function day1_part2(path)
-{
+async function day1_part2(path) {
     let sum = 0;
-    for await (const line of readIterator(path))
-    {
+    for await (const line of readIterator(path)) {
         let firstLast = firstLastNumberWithSpelled(line);
         // console.log(`from ${line} - ${firstLast}`);
         sum += firstLast;
@@ -135,17 +118,19 @@ async function day1_part2(path)
     return sum;
 }
 
-console.log("Solution for Day 1, step 2")
-console.log(`Result ${await day1_part2(path1)}`); // 55343?
-
-console.log(`Result ${await day1_part2("day1.mitch.input.txt")}`);
-
-export function compute_array(data)
-{
+export function compute_array(data) {
     let sum = 0;
-    for (const d of data)
-    {
+    for (const d of data) {
         sum += firstLastNumberWithSpelled(d);
     }
     return sum;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    let path1 = "day1.input.txt";
+    console.log("Solution for Day 1, step 1")
+    console.log(`Result ${await day1_part1(path1)}`); // correct: 54239
+
+    console.log("Solution for Day 1, step 2")
+    console.log(`Result ${await day1_part2(path1)}`); // 55343?
 }

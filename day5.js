@@ -1,4 +1,5 @@
 ﻿import {readIteratorAsArray} from "./bot.js";
+import {fileURLToPath} from "url";
 
 let keyOfMaps = [
     "seed-to-soil",
@@ -85,17 +86,9 @@ export function getSeedMaps(data, seedMethod) {
     return results;
 }
 
-
-const path = 'day5.input.txt';
-// let lines = await readIteratorAsArray(path);
-// let data = lowestLocation(lines, true);
-// console.log(JSON.stringify(data));
-// let data2 = getLowestLocationMulti(lines);
-// console.log(JSON.stringify(data2));
-
 export function getLowestLocationMulti(lines) {
     let fileData = processFile(lines, false);
-    console.log(JSON.stringify(fileData));
+    // console.log(JSON.stringify(fileData));
     let data = getLowestSeedMaps(fileData);
     return data;
 }
@@ -103,7 +96,7 @@ export function getLowestLocationMulti(lines) {
 export function lowestLocation(lines) {
     let fileData = processFile(lines, true);
     let data = getSeedMaps(fileData);
-    console.log(JSON.stringify(data));
+    // console.log(JSON.stringify(data));
 
     let lowest = Number.MAX_VALUE;
     let winner = NaN;
@@ -172,4 +165,13 @@ export function processFile(lines, seedMethod) {
     data.seeds = seeds;
     data.maps = maps;
     return data;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    const path = 'day5.input.txt';
+    let lines = await readIteratorAsArray(path);
+    let data = lowestLocation(lines, true);
+    console.log(JSON.stringify(data));
+    let data2 = getLowestLocationMulti(lines);
+    console.log(JSON.stringify(data2));
 }

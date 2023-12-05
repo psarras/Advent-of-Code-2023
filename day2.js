@@ -1,17 +1,15 @@
 ﻿import {readIterator} from "./bot.js";
+import {fileURLToPath} from "url";
 
-export function getObject(line)
-{
+export function getObject(line) {
     let gameToTakes = line.split(":");
     let gameId = parseInt(gameToTakes[0].split(" ")[1]);
 
     let takes = gameToTakes[1].split(";").map(
-        x =>
-        {
+        x => {
             let dictionary = {};
             x.split(",").map(
-                y =>
-                {
+                y => {
                     let components = y.trim().split(" ");
                     let key = components[1];
                     let value = parseInt(components[0]);
@@ -25,13 +23,11 @@ export function getObject(line)
     return {gameId, takes};
 }
 
-export function isValidGame(line, red, green, blue)
-{
+export function isValidGame(line, red, green, blue) {
     let {gameId, takes} = getObject(line);
 
     let isValid = true;
-    for (const take of takes)
-    {
+    for (const take of takes) {
         if (take["red"] && take["red"] > red)
             isValid = false;
         else if (take["blue"] && take["blue"] > blue)
@@ -43,14 +39,11 @@ export function isValidGame(line, red, green, blue)
     return {Valid: isValid, Game: gameId};
 }
 
-export function sumOfNonValidGames(datas, red, green, blue)
-{
+export function sumOfNonValidGames(datas, red, green, blue) {
     let sum = 0;
-    for (const data of datas)
-    {
+    for (const data of datas) {
         let result = isValidGame(data, red, green, blue);
-        if (result.Valid)
-        {
+        if (result.Valid) {
             sum += result.Game;
         }
 
@@ -59,71 +52,50 @@ export function sumOfNonValidGames(datas, red, green, blue)
 }
 
 
-async function day2_part1(path, red, green, blue)
-{
+async function day2_part1(path, red, green, blue) {
     let sum = 0;
-    for await (const data of readIterator(path))
-    {
+    for await (const data of readIterator(path)) {
         let result = isValidGame(data, red, green, blue);
-        if (result.Valid)
-        {
+        if (result.Valid) {
             sum += result.Game;
         }
     }
     return sum;
 }
 
-console.log("Answer to Day 2 part 1 is: " +
-    await day2_part1("day2.input.txt", 12, 13, 14))
 
-
-export function powerOfGame(data)
-{
+export function powerOfGame(data) {
     let {gameId, takes} = getObject(data);
     let coloursMax = {};
-    for (const take of takes)
-    {
-        for (const [key, value] of Object.entries(take))
-        {
+    for (const take of takes) {
+        for (const [key, value] of Object.entries(take)) {
             if (!coloursMax[key] || coloursMax[key] < value)
                 coloursMax[key] = value;
         }
     }
 
-    console.log(`For this line: ${JSON.stringify(takes)} minimal = ${JSON.stringify(coloursMax)}`);
+    // console.log(`For this line: ${JSON.stringify(takes)} minimal = ${JSON.stringify(coloursMax)}`);
     let power = 1;
-    for (const [key, value] of Object.entries(coloursMax))
-    {
+    for (const [key, value] of Object.entries(coloursMax)) {
         power *= value;
     }
     return {power: power};
 }
 
 
-async function day2_part2(path)
-{
+async function day2_part2(path) {
     let sum = 0;
-    for await (const data of readIterator(path))
-    {
+    for await (const data of readIterator(path)) {
         let result = powerOfGame(data);
         sum += result.power;
     }
     return sum;
 }
 
-console.log("Answer to Day 2 part 2 is: " +
-    await day2_part2("day2.input.txt"))
-
-
-
-
-
-
-
-
-
-
-
-
-
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    console.log("Answer to Day 2 part 1 is: " +
+        await day2_part1("day2.input.txt", 12, 13, 14))
+    console.log("Answer to Day 2 part 2 is: " +
+        await day2_part2("day2.input.txt"));
+}
 

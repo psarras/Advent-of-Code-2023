@@ -1,4 +1,5 @@
 ﻿import {readIteratorAsArray} from "./bot.js";
+import {fileURLToPath} from "url";
 
 export function engineNumbers(lines) {
     let data = {};
@@ -60,9 +61,9 @@ function getId(symbol) {
 
 export function engineRatios(lines) {
     let data = engineNumbers(lines);
-    console.log(`data: ${JSON.stringify(data)}`);
+    // console.log(`data: ${JSON.stringify(data)}`);
     let numbersWithAsterisk = data.numberSymbols.filter(x => x.symbols.filter(y => y.symbol === "*").length > 0);
-    console.log(`numbersWithAsterisk: ${JSON.stringify(numbersWithAsterisk)}`);
+    // console.log(`numbersWithAsterisk: ${JSON.stringify(numbersWithAsterisk)}`);
     let groupsWithSameCoords = {};
     for (const numElement of numbersWithAsterisk) {
         for (const symbol of numElement.symbols) {
@@ -82,8 +83,8 @@ export function engineRatios(lines) {
         }
         sum += multiple;
     }
-    console.log("====================================");
-    console.log(`groupsWithSameCoords: ${JSON.stringify(groupsWithSameCoords)}`);
+    // console.log("====================================");
+    // console.log(`groupsWithSameCoords: ${JSON.stringify(groupsWithSameCoords)}`);
     return sum;
 }
 
@@ -135,12 +136,12 @@ export function engineNumbersSum(lines) {
     return sum;
 }
 
-let path = "day3.input.txt";
-// let numbers = await readIteratorAsArray(path);
-// // console.log(numbers);
-// let answer1 = engineNumbersSum(numbers);
-// console.log(`Answer to Day3 ${answer1}`); // wrong 454952, 456840, 550853, 553079
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    let path = "day3.input.txt";
+    let numbers = await readIteratorAsArray(path);
+    let answer1 = engineNumbersSum(numbers);
+    console.log(`Answer to Day3 ${answer1}`);
 
-
-let sum = engineRatios(await readIteratorAsArray(path));
-console.log(`Answer to Day3 ${sum}`);
+    let sum = engineRatios(await readIteratorAsArray(path));
+    console.log(`Answer to Day3 ${sum}`);
+}
