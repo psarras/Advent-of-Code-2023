@@ -48,9 +48,9 @@ export function engineRatios(lines) {
         for (let j = 0; j < line.length; j++) {
             let character = line[j];
             if (character === "*") {
-                
+
             }
-          
+
         }
     }
     return 10;
