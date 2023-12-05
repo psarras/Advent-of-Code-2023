@@ -9,7 +9,7 @@ test('all the engine numbers', (t) => {
         "...*......",
         "..30..633."
     ];
-    let numbers = engineNumbers(lines);
+    let numbers = engineNumbers(lines).numbers;
     assert.strictEqual(numbers.length, 2);
     assert.strictEqual(numbers[0], 460);
     assert.strictEqual(numbers[1], 30);
@@ -22,7 +22,9 @@ test('include the end of a line', (t) => {
         "..30..633",
         "......#..",
     ];
-    let numbers = engineNumbers(lines);
+    let data = engineNumbers(lines);
+    // console.log(JSON.stringify(data));
+    let numbers = data.numbers;
     assert.strictEqual(numbers.length, 3);
     assert.strictEqual(numbers[0], 460);
     assert.strictEqual(numbers[1], 30);
@@ -48,18 +50,19 @@ test('all the engine numbers sum', (t) => {
 });
 
 test('around', (t) => {
-    assert.strictEqual(isSymbolAround(["123$.."], 2, 0), true);
-    assert.strictEqual(isSymbolAround(["123.."], 2, 0), false);
-    assert.strictEqual(isSymbolAround(["123..", "..$.."], 2, 0), true);
-    assert.strictEqual(isSymbolAround(["123..", "...*."], 2, 0), true);
-    assert.strictEqual(isSymbolAround(["..$..", "123..",], 2, 1), true);
+    assert.strictEqual(isSymbolAround(["123$.."], 2, 0).found, true);
+    assert.strictEqual(isSymbolAround(["123.."], 2, 0).found, false);
+    assert.strictEqual(isSymbolAround(["123..", "..$.."], 2, 0).found, true);
+    assert.strictEqual(isSymbolAround(["123..", "...*."], 2, 0).found, true);
+    assert.strictEqual(isSymbolAround(["..$..", "123..",], 2, 1).found, true);
 });
 
 test('first lines of input', (t) => {
 
     let allNumbers = engineNumbers([
         "...........................770.651...............887....79...946...921...493.....942..942.....151....155....................................",
-        "......240...................*.....-......................$..*...................*.......%.....+....................956.549.*290.......834..."]);
+        "......240...................*.....-......................$..*...................*.......%.....+....................956.549.*290.......834..."])
+        .numbers;
     // console.log(allNumbers);
     assert.strictEqual(allNumbers.length, 8);
     assert.strictEqual(allNumbers[0], 770);
@@ -72,7 +75,7 @@ test('is symbol', (t) => {
 })
 
 
-test.skip('engine ratio for example', (t) => {
+test('engine ratio for example', (t) => {
     let lines = [
         "467..114.",
         "...*.....",
@@ -86,6 +89,16 @@ test.skip('engine ratio for example', (t) => {
         ".664.598.",
     ];
     let ratios = engineRatios(lines);
-    assert.strictEqual(ratios.length, 2);
-}).then(r => console.log("skipped"));
+    // assert.strictEqual(ratios.length, 2);
+    assert.strictEqual(ratios, 467835);
+})
 
+// let test = [
+//     {"number": 467, 
+//         "symbols": [
+//             {"symbol": "*", "x": 3, "y": 1}
+//         ]}, 
+//     {"number": 35,
+//     "symbols": [
+//         {"symbol": "*", "x": 3, "y": 1}
+//     ];
