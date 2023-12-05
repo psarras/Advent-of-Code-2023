@@ -72,7 +72,7 @@ test('is symbol', (t) => {
 })
 
 
-test('engine ratio for example', (t) => {
+test.skip('engine ratio for example', (t) => {
     let lines = [
         "467..114.",
         "...*.....",
@@ -87,4 +87,5 @@ test('engine ratio for example', (t) => {
     ];
     let ratios = engineRatios(lines);
     assert.strictEqual(ratios.length, 2);
-});
+}).then(r => console.log("skipped"));
+

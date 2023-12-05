@@ -87,11 +87,11 @@ export function getSeedMaps(data, seedMethod) {
 
 
 const path = 'day5.input.txt';
-let lines = await readIteratorAsArray(path);
+// let lines = await readIteratorAsArray(path);
 // let data = lowestLocation(lines, true);
 // console.log(JSON.stringify(data));
-let data2 = getLowestLocationMulti(lines);
-console.log(JSON.stringify(data2));
+// let data2 = getLowestLocationMulti(lines);
+// console.log(JSON.stringify(data2));
 
 export function getLowestLocationMulti(lines) {
     let fileData = processFile(lines, false);
@@ -130,17 +130,12 @@ function extractNumbers(line) {
     return numbers;
 }
 
-export function alternativeSeedExtraction(seedsLine) {
+function alternativeSeedExtraction(seedsLine) {
     let cleanLines = extractNumbers(seedsLine);
     let newSeeds = [];
     for (let i = 0; i < cleanLines.length; i += 2) {
         let first = cleanLines[i];
         let second = cleanLines[i + 1];
-        // let bucket = [];
-        // console.log(`alternativeSeedExtraction: ${first} ${second}`);
-        // for (let j = 0; j < second; j++) {
-        //     bucket.push(first + j);
-        // }
         newSeeds.push([first, second]);
     }
     return newSeeds;

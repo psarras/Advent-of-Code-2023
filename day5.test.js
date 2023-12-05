@@ -5,7 +5,6 @@ import {
     getSeedMaps,
     processMap,
     lowestLocation,
-    alternativeSeedExtraction,
     getLowestLocationMulti
 } from "./day5.js";
 
@@ -76,13 +75,6 @@ test('get the last map', (t) => {
 test('get the lowest map', (t) => {
     let data = lowestLocation(lines, true);
     assert.strictEqual(data.location, 35);
-});
-
-test('alternative seed extraction', (t) => {
-    let data = alternativeSeedExtraction("seeds: 79 14 55 13");
-    console.log(JSON.stringify(data));
-    assert.strictEqual(data[0][1], 80);
-    assert.strictEqual(data[0][2], 81);
 });
 
 test('alternative seed extraction', (t) => {
