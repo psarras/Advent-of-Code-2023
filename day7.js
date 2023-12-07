@@ -1,16 +1,9 @@
 ﻿import {fileURLToPath} from "url";
 import {readIteratorAsArray} from "./bot.js";
 
-export function CalcWinnings(plays)
+export function CalcWinnings(plays, rule)
 {
-    // let componentPlays = plays.map(x => ProcessPlay(x));
-    let compos = CalcCompos(plays);
-    // let maxRanks = compos.length;
-    // for (let i = 0; i < compos.length; i++)
-    // {
-    //     const compo = compos[i];
-    // compo.winning = ProcessValue(compo, i, maxRanks);
-    // }
+    let compos = CalcCompos(plays, rule);
     compos = compos.sort((a, b) => a.handValue - b.handValue);
     for (const compo of compos)
     {
@@ -48,51 +41,63 @@ export const cardValue = {
     "A": 120,
 };
 
+export const alternativeValue = {
+    "J": 1,
+    "2": 10,
+    "3": 20,
+    "4": 30,
+    "5": 40,
+    "6": 50,
+    "7": 60,
+    "8": 70,
+    "9": 80,
+    "T": 90,
+    "Q": 100,
+    "K": 110,
+    "A": 120,
+};
+
 export function ProcessPlay(play)
 {
     let components = play.split(" ");
     return {cards: components[0], bet: parseInt(components[1])};
 }
 
-export function CalcCompos(plays)
+export function CalcCompos(plays, rule)
 {
     let compos = [];
     for (let i = 0; i < plays.length; i++)
     {
-        compos.push(CalcCompo(plays[i]));
+        compos.push(CalcCompo(plays[i], rule));
     }
     return compos;
 }
 
-function addData(play, card, others, compo)
+function addData(play, card, compo, cardValue)
 {
     let newCompo = {...compo};
     newCompo.play = {...play};
-    newCompo.others = others;
-    newCompo.othersValue = valueOfSecondaryCards(others);
-    newCompo.highCardValue = cardValue[card];
     newCompo.handValue =
-        // cardValue[card] + // * newCompo.value +
-        newCompo.value + valueOfSecondaryCards(play.cards);
+        newCompo.value + valueOfSecondaryCards(play.cards, cardValue);
     return newCompo;
 }
 
-export function valueOfSecondaryCards(cards)
+export function valueOfSecondaryCards(cards, cardValue)
 {
     let value = 0;
-    console.log(`cards: ${JSON.stringify(cards)}`);
+    // console.log(`cards: ${JSON.stringify(cards)}`);
     for (let i = 0; i < cards.length; i++)
     {
         const card = cards[i];
         let divider = Math.pow(20, i)
         let addition = cardValue[card] / divider;
         value += addition;
-        console.log(`card: ${cardValue[card]} / ${divider} = ${addition}`);
+        // console.log(`card: ${cardValue[card]} / ${divider} = ${addition}`);
     }
     return value;
 }
 
-export function CalcCompo(play)
+export function CalcCompo(play, oldRule)
 {
     let processPlay = ProcessPlay(play);
     let {cards, bet} = processPlay;
@@ -108,52 +113,64 @@ export function CalcCompo(play)
     }
     let entries = Object.entries(cardCount).sort(([, a], [, b]) => b - a);
     let entriesKeys = entries.map(x => x[0]);
+    let cardVal = oldRule ? cardValue : alternativeValue;
     // console.log(`entries: ${JSON.stringify(entriesKeys)}`);
     for (let i = 0; i < entries.length; i++)
     {
+        let jCount = cardCount["J"];
         const [card, count] = entries[i];
-        let others = entries
-            .filter(x => x[0] !== card)
-            .map(x => x[0]);
-        switch (count)
+        let countWithJ = count;
+        if (card !== "J" && jCount > 0)
+            countWithJ += jCount;
+        if (card === "J" && jCount != 5)
+        {
+            let nextBest = entries[i + 1]
+            let [, count2] = nextBest;
+            countWithJ += count2;
+        }
+        let finalCount = oldRule ? count : countWithJ;
+        console.log(`final count: ${finalCount} - ${cards} - from:${count}`);
+        switch (finalCount)
         {
             case 5:
-                return addData(processPlay, card, entriesKeys, compos[0]);
+                return addData(processPlay, card, compos[0], cardVal);
             case 4:
             {
-                return addData(processPlay, card, entriesKeys, compos[1]);
+                return addData(processPlay, card, compos[1], cardVal);
             }
             case 3:
             {
                 let nextBest = entries[i + 1]
                 let [card2, count2] = nextBest;
                 if (count2 === 2)
-                    return addData(processPlay, card, entriesKeys, compos[2]);
+                    return addData(processPlay, card, compos[2], cardVal);
                 else
-                    return addData(processPlay, card, entriesKeys, compos[3]);
+                    return addData(processPlay, card, compos[3], cardVal);
             }
             case 2:
             {
                 let nextBest = entries[i + 1]
                 let [card2, count2] = nextBest;
-                let bestCard = cardValue[card] > cardValue[card2] ? card : card2;
+                let bestCard = cardVal[card] > cardVal[card2] ? card : card2;
                 if (count2 === 2)
-                    return addData(processPlay, bestCard, entriesKeys, compos[4]);
+                    return addData(processPlay, bestCard, compos[4], cardVal);
                 else
-                    return addData(processPlay, card, entriesKeys, compos[5]);
+                    return addData(processPlay, card, compos[5], cardVal);
             }
             case 1:
-                return addData(processPlay, card, entriesKeys, compos[6]);
+                return addData(processPlay, card, compos[6], cardVal);
         }
     }
 
-    return compos[0];
+    return "error";
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url))
 {
     const path = 'day7.input.txt';
     let lines = await readIteratorAsArray(path);
-    let answer = CalcWinnings(lines);
+    let answer = CalcWinnings(lines, true);
     console.log(`Answer to Day7 ${answer}`);
+    let answer2 = CalcWinnings(lines, false);
+    console.log(`Answer to Day7 part 2 ${answer2}`); //253515787, 253537242 
 }
