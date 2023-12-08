@@ -52,10 +52,10 @@ async function dayTwo(path) {
 }
 
 export function CountWinCards(example) {
-    let [sum, data] = SumOfCardValues(example);
+    let [, data] = SumOfCardValues(example);
     let cards = [];
     let wins = 0;
-    for (const [key, values] of Object.entries(data).reverse()) {
+    for (const [, values] of Object.entries(data).reverse()) {
         cards.push(values);
     }
     wins += cards.length;
